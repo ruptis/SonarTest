@@ -2,6 +2,7 @@ package com.example.stringexpressioncalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
@@ -11,7 +12,10 @@ import android.os.Vibrator;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -94,12 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         input.setText(items.toString());
 
-        scroll.post(new Runnable() {
-            @Override
-            public void run() {
-                scroll.fullScroll(View.FOCUS_RIGHT);
-            }
-        });
+        scroll.post(() -> scroll.fullScroll(View.FOCUS_RIGHT));
 
         ICalculator calculator = new Calculator();
 

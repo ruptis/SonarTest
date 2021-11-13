@@ -1,8 +1,12 @@
 package com.example.stringexpressioncalculator;
 
+import static org.junit.Assert.*;
+
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -10,8 +14,16 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+    private Calculator calculator;
+
+    @Before
+    public void setUp() {
+        calculator = new Calculator();
     }
+    @Test
+    public void calculateTest() throws Exception {
+        double result = calculator.calculate("2+2");
+        Assert.assertEquals(4, result, 0.1);
+    }
+
 }
