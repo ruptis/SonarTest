@@ -77,7 +77,7 @@ task jacocoUnitTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', '
             '**/Manifest*.*'
     ]
     def javaClasses = fileTree(
-            dir: "$buildDir/intermediates/javac/debug/classes/com/example/stringexpressioncalculatorr",
+            dir: "$buildDir/intermediates/javac/debug/classes",
             excludes: fileFilter
     )
     classDirectories.setFrom(files([ javaClasses ]))
