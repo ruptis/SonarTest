@@ -9,8 +9,12 @@ sonarqube {
     property "sonar.projectKey", "ruptis_SonarTest"
     property "sonar.organization", "ruptis"
     property "sonar.host.url", "https://sonarcloud.io"
-    property 'sonar.coverage.jacoco.xmlReportPaths', '${project.buildDir}/reports/jacoco.xml'
+    property "sonar.coverage.jacoco.xmlReportPaths", fileTree(include: ['jacoco*.xml'], dir: "$buildDir/reports/jacoco").collect()
   }
+}
+
+jacoco {
+    toolVersion = '0.8.3'
 }
 
 android {
@@ -41,10 +45,12 @@ android {
         abortOnError false
     }
     testOptions {
-        unitTests {
-            includeAndroidResources = true
+        execution 'ANDROID_TEST_ORCHESTRATOR'
+        unitTests.all {
+            finalizedBy jacocoUnitTestReport
         }
     }
+
 
 }
 
@@ -57,3 +63,38 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
 
+task jacocoUnitTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'copyReport']) {
+    def coverageSourceDirs = [
+            "src/main/java"
+    ]
+    def fileFilter = [
+            '**/R.class',
+            '**/R$*.class',
+            '**/*$ViewInjector*.*',
+            '**/*$ViewBinder*.*',
+            '**/BuildConfig.*',
+            '**/Manifest*.*'
+    ]
+    def javaClasses = fileTree(
+            dir: "$buildDir/intermediates/javac/debug/classes/com/example/stringexpressioncalculatorr",
+            excludes: fileFilter
+    )
+    classDirectories.setFrom(files([ javaClasses ]))
+    additionalSourceDirs.setFrom(files(coverageSourceDirs))
+    sourceDirectories.setFrom(files(coverageSourceDirs))
+    executionData.setFrom(fileTree(dir: "$buildDir", includes: [
+            "jacoco/testDebugUnitTest.exec"
+    ]))
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+tasks.register('copyReport', Copy) {
+    doLast {
+        mkdir "$buildDir/jacoco"
+    }
+    from "$buildDir/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+    into "$buildDir/jacoco"
+}
