@@ -10,7 +10,7 @@ sonarqube {
         property "sonar.organization", "ruptis"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", fileTree(include: ['jacoco*.xml'], dir: "$buildDir/reports/jacoco").collect()
-        property "sonar.junit.reportsPath", "app/build/test-results/*/TEST-*.xml"
+        property "sonar.junit.reportsPath", "$buildDir/test-results/*/TEST-*.xml"
   }
 }
 
@@ -34,17 +34,24 @@ android {
 
     buildTypes {
         release {
+            testCoverageEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            testCoverageEnabled true
+        }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     lintOptions {
         abortOnError false
     }
+
     testOptions {
         execution 'ANDROID_TEST_ORCHESTRATOR'
         unitTests.all {
@@ -77,7 +84,7 @@ task jacocoUnitTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', '
             '**/Manifest*.*'
     ]
     def javaClasses = fileTree(
-            dir: "$buildDir/intermediates/javac/debug/classes/com/example/stringexpressioncalculatorr",
+            dir: "$buildDir/intermediates/javac/debug/classes",
             excludes: fileFilter
     )
     classDirectories.setFrom(files([ javaClasses ]))
