@@ -9,7 +9,7 @@ sonarqube {
         property "sonar.projectKey", "ruptis_SonarTest"
         property "sonar.organization", "ruptis"
         property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.coverage.jacoco.xmlReportPaths", fileTree(include: ['jacoco*.xml'], dir: "$buildDir/reports/jacoco").collect()
+        property "sonar.coverage.jacoco.xmlReportPaths", fileTree(include: ['jacoco*.xml'], dir: "$buildDir/reports/jacoco/jacocoUnitTestReport").collect()
         property "sonar.junit.reportsPath", "$buildDir/test-results/*/TEST-*.xml"
   }
 }

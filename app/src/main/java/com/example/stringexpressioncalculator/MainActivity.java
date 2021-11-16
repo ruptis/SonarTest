@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickStart(View view) {
         int id = view.getId();
 
-        view.performHapticFeedback(HapticFeedbackConstants.CONFIRM) ;
+        view.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
 
         IExpressionChecker expressionChecker = new ExpressionChecker();
 
