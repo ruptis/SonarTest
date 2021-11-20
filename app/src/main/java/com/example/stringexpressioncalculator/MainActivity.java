@@ -1,11 +1,14 @@
 package com.example.stringexpressioncalculator;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -13,19 +16,37 @@ import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+
 import java.util.ArrayList;
 
+/**
+ * The type Main activity.
+ */
 public class MainActivity extends AppCompatActivity {
 
+    private InterstitialAd mInterstitialAd;
 
+    private AdRequest adRequest;
+
+    /**
+     * The Input items.
+     */
     ArrayList<String> inputItems = new ArrayList<>();
 
+    /**
+     * The constant SPACE.
+     */
     public static final int SPACE = 15;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         onWindowFocusChanged(true);
@@ -34,14 +55,60 @@ public class MainActivity extends AppCompatActivity {
             getWindow().getAttributes().layoutInDisplayCutoutMode =
                     WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
         }
+
+        MobileAds.initialize(this, initializationStatus -> {
+        });
+
+        adRequest = new AdRequest.Builder().build();
+
+        loadAd();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
+    private void loadAd() {
+        InterstitialAd.load(this,"\n" +
+                        "ca-app-pub-6240815819353431/1683112214", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        mInterstitialAd = interstitialAd;
+
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                mInterstitialAd = null;
+
+                                loadAd();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        mInterstitialAd = null;
+                    }
+                });
+    }
+
+    /**
+     * On click start.
+     *
+     * @param view the view
+     */
     @SuppressLint({"NonConstantResourceId", "SetTextI18n"})
     public void onClickStart(View view) {
         int id = view.getId();
 
-        view.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+        final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        final VibrationEffect vibrationEffect;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            view.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            vibrationEffect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK);
+            vibrator.cancel();
+            vibrator.vibrate(vibrationEffect);
+        }
 
         IExpressionChecker expressionChecker = new ExpressionChecker();
 
@@ -115,5 +182,8 @@ public class MainActivity extends AppCompatActivity {
 
         output.setText(outputResult);
 
+        if (id == R.id.solve && mInterstitialAd != null) {
+            mInterstitialAd.show(MainActivity.this);
+        }
     }
 }
