@@ -1,7 +1,5 @@
 package com.example.stringexpressioncalculator;
 
-import static org.junit.Assert.*;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,10 +18,13 @@ public class ExampleUnitTest {
     public void setUp() {
         calculator = new Calculator();
     }
+
     @Test
     public void calculateTest() throws Exception {
         double result = calculator.calculate("2+2");
         Assert.assertEquals(4, result, 0.1);
     }
+
+
 
 }

@@ -1,5 +1,16 @@
 <resources>
-    <dimen name="base">20dp</dimen>
+    <dimen name="zero">0dp</dimen>
+    <dimen name="small">3dp</dimen>
+    <dimen name="base">10dp</dimen>
+
+    <dimen name="defaultbtn">88dp</dimen>
+    <dimen name="minbtn">66dp</dimen>
+    <dimen name="btnpadding">25dp</dimen>
+    <dimen name="minpadding">15dp</dimen>
+
+    <dimen name="smallRadius">20dp</dimen>
+    <dimen name="baseRadius">45dp</dimen>
+
     <dimen name="baseText">30sp</dimen>
     <dimen name="largeText">40sp</dimen>
 </resources>

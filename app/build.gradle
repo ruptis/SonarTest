@@ -10,7 +10,7 @@ sonarqube {
         property "sonar.organization", "ruptis"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", fileTree(include: ['jacoco*.xml'], dir: "$buildDir/reports/jacoco/jacocoUnitTestReport").collect()
-        property "sonar.junit.reportsPath", "$buildDir/test-results/*/TEST-*.xml"
+        property "sonar.coverage.exclusions", '**/*Activity*.*'
   }
 }
 
@@ -69,6 +69,16 @@ dependencies {
     testImplementation 'org.testng:testng:6.9.6'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    implementation 'com.google.android.gms:play-services-ads:20.4.0'
+
+    constraints {
+        implementation('androidx.work:work-runtime:2.7.0') {
+            because '''androidx.work:work-runtime:2.1.0 pulled from play-services-ads
+                   has a bug using PendingIntent without FLAG_IMMUTABLE or
+                   FLAG_MUTABLE and will fail in apps targeting S+.'''
+        }
+    }
 }
 
 task jacocoUnitTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'copyReport']) {

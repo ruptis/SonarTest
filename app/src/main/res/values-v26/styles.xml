@@ -3,8 +3,8 @@
 
     <style name="Buttons" parent="@style/Widget.MaterialComponents.ExtendedFloatingActionButton">
         <item name="android:stateListAnimator">@null</item>
-        <item name="android:layout_width">88dp</item>
-        <item name="android:layout_height">88dp</item>
+        <item name="android:layout_width">@dimen/defaultbtn</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_weight">1</item>
         <item name="android:gravity">center</item>
@@ -12,7 +12,7 @@
         <item name="android:textSize">@dimen/baseText</item>
         <item name="minWidth">88dp</item>
         <item name="maxHeight">88dp</item>
-        <item name="android:padding">25dp</item>
+        <item name="android:padding">@dimen/btnpadding</item>
         <item name="android:autoSizeTextType">uniform</item>
     </style>
 </resources>
